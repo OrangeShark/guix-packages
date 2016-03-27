@@ -36,16 +36,16 @@
 (define-public libtoxcore
   (package
     (name "libtoxcore")
-    (version "20160307.2e48a3f")
+    (version "20160319.532629d")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/irungentoo/toxcore.git")
-             (commit "2e48a3f")))
+             (commit "532629d")))
        (sha256
         (base32
-         "1lxj57khw1jnzazdzymlhdw39nh485k5f43cpj64wn11bmgkzc1r"))))
+         "0x8mjrjiafgia9vy7w4zhfzicr2fljx8xgm2ppi4kva2r2z1wm2f"))))
     (build-system gnu-build-system)
     (arguments
      '(#:phases
@@ -71,7 +71,7 @@ toxav, and toxdns API libraries.")
 (define-public utox
   (package
    (name "utox")
-   (version "0.6.1")
+   (version "0.7.0")
    (source
     (origin
      (method url-fetch)
@@ -79,7 +79,7 @@ toxav, and toxdns API libraries.")
                          version ".tar.gz"))
      (sha256
       (base32
-       "0kkwdj0iq8cxzshcvxj38wnac7i8x0sk8rvi4kfp0yi6vkrg2xg3"))))
+       "1fsxfkrnp8h9sf3n4nc4lg1y1sz5cna45bl8qra4s5y00mij1ldb"))))
    (build-system gnu-build-system)
    (arguments
     '(#:make-flags (list (string-append "PREFIX=" %output)
@@ -102,7 +102,7 @@ toxav, and toxdns API libraries.")
    (native-inputs
     `(("pkg-config" ,pkg-config)
       ("git" ,git)))
-   (synopsis "")
+   (synopsis "Lightweight Tox client")
    (description "")
    (home-page "http://utox.org/")
    (license license:gpl3+)))
@@ -141,9 +141,10 @@ toxav, and toxdns API libraries.")
        (alist-delete 
         'configure 
         %standard-phases)))
-    (synopsis "")
-    (description "")
-    (home-page "")
+    (synopsis "Lightweight audio filtering library")
+    (description "An easy to use audio filtering library made from webrtc code, used
+in @code{libtoxcore}.")
+    (home-page "https://github.com/irungentoo/filter_audio")
     (license license:bsd-3)))
 
 (define-public sqlcipher
@@ -171,24 +172,24 @@ toxav, and toxdns API libraries.")
        ("automake" ,automake)
        ("libtool" ,libtool)
        ("tcl" ,tcl)))
-    (synopsis "")
+    (synopsis "SQLite extension that provides 256 bit AES encryption")
     (description "")
-    (home-page "")
+    (home-page "https://github.com/sqlcipher/sqlcipher")
     (license license:bsd-3)))
 
-#;
 (define-public qtox
   (package
     (name "qtox")
-    (version "1.2.4")
+    (version "20160326.de48789")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://github.com/tux3/qTox/archive/v"
-                           version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tux3/qTox.git")
+             (commit "de48789")))
        (sha256
         (base32
-         "1pfzdasznayfz63dl5qahm7pjnbdcyga3mm4s87bmysxhq4176xg"))))
+         "094diddnb4xws38362z3bs8k00g36ydgz7yqhv6gykpa5cpibbkx"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
