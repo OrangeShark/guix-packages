@@ -180,16 +180,15 @@ in @code{libtoxcore}.")
 (define-public qtox
   (package
     (name "qtox")
-    (version "20160326.de48789")
+    (version "1.4.1")
     (source
      (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/tux3/qTox.git")
-             (commit "de48789")))
+       (method url-fetch)
+       (uri (string-append "https://github.com/tux3/qTox/archive/v"
+                           version ".tar.gz"))
        (sha256
         (base32
-         "094diddnb4xws38362z3bs8k00g36ydgz7yqhv6gykpa5cpibbkx"))))
+         "113c97g8pvkvc0g3mkfg9yyl36wqxdh0dkgmv5kgn3ayvvymwbkm"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
@@ -221,3 +220,16 @@ in @code{libtoxcore}.")
     (description "")
     (home-page "")
     (license license:gpl3+)))
+
+(define-public qtox-dev
+  (package (inherit qtox)
+    (version "20160326.de48789")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tux3/qTox.git")
+             (commit "de48789")))
+       (sha256
+        (base32
+         "094diddnb4xws38362z3bs8k00g36ydgz7yqhv6gykpa5cpibbkx"))))))
