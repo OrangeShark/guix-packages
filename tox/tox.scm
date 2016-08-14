@@ -20,53 +20,44 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system gnu))
 
-(define-public libsodium-1.0.8
-  (package (inherit libsodium)
-    (version "1.0.8")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://download.libsodium.org/libsodium/"
-                           "releases/libsodium-" version ".tar.gz"))
-       (sha256
-        (base32
-         "09hr604k9gdss2r321x5dv3wn11fdl87nswr18g68lkqab993wf0"))))))
 
-
-(define-public libtoxcore
-  (package
-    (name "libtoxcore")
-    (version "20160319.532629d")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/irungentoo/toxcore.git")
-             (commit "532629d")))
-       (sha256
-        (base32
-         "0x8mjrjiafgia9vy7w4zhfzicr2fljx8xgm2ppi4kva2r2z1wm2f"))))
-    (build-system gnu-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'bootstrap
-           (lambda _ (zero? (system* "sh" "autogen.sh")))))))
-    (inputs
-     `(("libsodium" ,libsodium-1.0.8)
-       ("libvpx" ,libvpx)
-       ("opus" ,opus)))
-    (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("libtool" ,libtool)
-       ("pkg-config" ,pkg-config)))
-    (synopsis "P2P FOSS instant messaging application")
-    (description "Tox is a peer-to-peer, encrypted instant messaging and
+(define-public toxcore
+  (let ((commit "755f084e8720b349026c85afbad58954cb7ff1d4")
+        (revision "1"))
+    (package
+      (name "toxcore")
+      (version (string-append "0.0-" revision "."
+                              (string-take commit 7)))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/irungentoo/toxcore.git")
+               (commit commit)))
+         (sha256
+          (base32
+           "0ap1gvlyihnfivv235dbrgsxsiiz70bhlmlr5gn1027w3h5kqz8w"))))
+      (build-system gnu-build-system)
+      (arguments
+       '(#:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'bootstrap
+             (lambda _ (zero? (system* "sh" "autogen.sh")))))))
+      (inputs
+       `(("libsodium" ,libsodium)
+         ("libvpx" ,libvpx)
+         ("opus" ,opus)))
+      (native-inputs
+       `(("autoconf" ,autoconf)
+         ("automake" ,automake)
+         ("libtool" ,libtool)
+         ("pkg-config" ,pkg-config)))
+      (synopsis "P2P FOSS instant messaging application")
+      (description "Tox is a peer-to-peer, encrypted instant messaging and
 video calling library that provides APIs for clients, including toxcore,
 toxav, and toxdns API libraries.")
-    (home-page "https://tox.chat")
-    (license license:gpl3+)))
+      (home-page "https://tox.chat")
+      (license license:gpl3+))))
 
 (define-public utox
   (package
@@ -87,12 +78,12 @@ toxav, and toxdns API libraries.")
       #:tests? #f
       #:phases (alist-delete 'configure %standard-phases)))
    (inputs
-    `(("libtoxcore" ,libtoxcore)
+    `(("toxcore" ,toxcore)
       ("filteraudio" ,filteraudio)
       ("dbus" ,dbus)
       ("openal" ,openal-1.17)
       ("libvpx" ,libvpx)
-      ("libsodium" ,libsodium-1.0.8)
+      ("libsodium" ,libsodium)
       ("freetype" ,freetype)
       ("fontconfig" ,fontconfig)
       ("v4l-utils" ,v4l-utils)
@@ -120,37 +111,40 @@ toxav, and toxdns API libraries.")
          "051k5fy8pk4fd9ha3qaqcv08xwbks09xl5qs4ijqq2qz5xaghhd3"))))))
 
 (define-public filteraudio
-  (package
-    (name "filteraudio")
-    (version "20150516.612c5a1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/irungentoo/filter_audio.git")
-             (commit "612c5a1")))
-       (sha256
-        (base32
-         "0bmf8dxnr4vb6y36lvlwqd5x68r4cbsd625kbw3pypm5yqp0n5na"))))
-    (build-system gnu-build-system)
-    (arguments
-     '(#:make-flags (list (string-append "PREFIX=" %output)
-                          "CC=gcc")
-       #:tests? #f
-       #:phases 
-       (alist-delete 
-        'configure 
-        %standard-phases)))
-    (synopsis "Lightweight audio filtering library")
-    (description "An easy to use audio filtering library made from webrtc code, used
+  (let ((commit "2fc669581e2a0ff87fba8de85861b49133306094")
+        (revision "1"))
+    (package
+      (name "filteraudio")
+      (version (string-append "0.0-" revision "."
+                              (string-take commit 7)))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/irungentoo/filter_audio.git")
+               (commit commit)))
+         (sha256
+          (base32
+           "0hbb290n3wb23f2k692a6bhc23nnqmxqi9sc9j15pnya8wifw64g"))))
+      (build-system gnu-build-system)
+      (arguments
+       '(#:make-flags (list (string-append "PREFIX=" %output)
+                            "CC=gcc")
+         #:tests? #f
+         #:phases 
+         (alist-delete 
+          'configure 
+          %standard-phases)))
+      (synopsis "Lightweight audio filtering library")
+      (description "An easy to use audio filtering library made from webrtc code, used
 in @code{libtoxcore}.")
-    (home-page "https://github.com/irungentoo/filter_audio")
-    (license license:bsd-3)))
+      (home-page "https://github.com/irungentoo/filter_audio")
+      (license license:bsd-3))))
 
 (define-public sqlcipher
   (package
     (name "sqlcipher")
-    (version "3.3.1")
+    (version "3.4.0")
     (source
       (origin
         (method url-fetch)
@@ -158,7 +152,7 @@ in @code{libtoxcore}.")
                             version ".tar.gz"))
         (sha256
           (base32
-            "1gv58dlbpzrmznly52yqbxgvii0ib88zr3aszla1bsypwjr6flff"))))
+            "1l23lbp9pmf20xkshrs45gbg0igixr6dwdbvgfzh5plnyzn05dwr"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags '("--enable-tempstore=yes"
@@ -180,7 +174,7 @@ in @code{libtoxcore}.")
 (define-public qtox
   (package
     (name "qtox")
-    (version "1.4.1")
+    (version "1.5.1")
     (source
      (origin
        (method url-fetch)
@@ -188,7 +182,7 @@ in @code{libtoxcore}.")
                            version ".tar.gz"))
        (sha256
         (base32
-         "113c97g8pvkvc0g3mkfg9yyl36wqxdh0dkgmv5kgn3ayvvymwbkm"))))
+         "0y15mc39x54k1kz36cw9412kl1p1p6nzlx97gagv4gg3vybfhbjv"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
@@ -199,8 +193,8 @@ in @code{libtoxcore}.")
                                (zero? (system* "qmake" prefix))))))))
     (inputs
      `(("qt" ,qt)
-       ("libtoxcore" ,libtoxcore)
-       ("libsodium" ,libsodium-1.0.8)
+       ("toxcore" ,toxcore)
+       ("libsodium" ,libsodium)
        ("libvpx" ,libvpx)
        ("openal" ,openal-1.17)
        ("ffmpeg" ,ffmpeg)
@@ -220,16 +214,3 @@ in @code{libtoxcore}.")
     (description "")
     (home-page "")
     (license license:gpl3+)))
-
-(define-public qtox-dev
-  (package (inherit qtox)
-    (version "20160326.de48789")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/tux3/qTox.git")
-             (commit "de48789")))
-       (sha256
-        (base32
-         "094diddnb4xws38362z3bs8k00g36ydgz7yqhv6gykpa5cpibbkx"))))))
